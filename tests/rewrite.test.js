@@ -16,11 +16,43 @@ test('prompt: example first, then the real sentence with its problems and catego
   assert.deepEqual(check(msgs[1].content), [], 'the worked example itself must pass every rule');
 });
 
+test('prompt names the exact flagged words to leave out (Gemma kept copying "in 7 days")', () => {
+  const findings = [
+    { ruleId: 'guarantee', text: 'GUARANTEE results', why: 'x' },
+    { ruleId: 'timeframe-promise', text: 'in 7 days', why: 'y' },
+  ];
+  const last = buildRewriteMessages({ sentence: 'Our gummies GUARANTEE results in 7 days!', findings, category: 'health' }).at(-1).content;
+  assert.match(last, /Leave out these words completely: "GUARANTEE results", "in 7 days"/);
+  assert.match(last, /no number of minutes, hours, days, weeks or months/);
+});
+
 test('cleanRewrite keeps one clean sentence', () => {
   assert.equal(cleanRewrite('Safer version: "Gummies for busy afternoons."'), 'Gummies for busy afternoons.');
   assert.equal(cleanRewrite("Sure! Here's a safer version:\n\n**Gummies for busy afternoons.**\n\nThis avoids..."), 'Gummies for busy afternoons.');
   assert.equal(cleanRewrite('   '), '');
   assert.equal(cleanRewrite('Ok'), '');
+});
+
+test('refusals, commentary and cut-off lines are failed tries (review I3)', () => {
+  for (const raw of [
+    "I'm sorry, but I can't help with that request.",
+    'I cannot fulfill this request. My purpose is to be helpful and harmless.',
+    "This line already follows Meta's policies.",
+    'Our gummies are made for busy afternoons and help you feel',
+  ]) assert.equal(cleanRewrite(raw), '', raw);
+});
+
+test('labels, list markers, bold and trailing explanations are stripped (review I3)', () => {
+  const want = 'Gummies for busy afternoons.';
+  for (const raw of [
+    '"Gummies for busy afternoons." This version avoids implying a condition.',
+    '**Rewrite:** Gummies for busy afternoons.',
+    'Option 1: Gummies for busy afternoons.',
+    '1. Gummies for busy afternoons.',
+    '* Gummies for busy afternoons.',
+    'Rewritten line: Gummies for busy afternoons.',
+    'Here is the rewritten line: Gummies for busy afternoons.',
+  ]) assert.equal(cleanRewrite(raw), want, raw);
 });
 
 test('makeRewrite returns the first rewrite that passes the rules', async () => {

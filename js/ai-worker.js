@@ -34,7 +34,7 @@ async function load() {
 }
 
 async function generate({ messages, temperature }) {
-  const out = await llm(messages, { max_new_tokens: 60, do_sample: true, temperature });
+  const out = await llm(messages, { max_new_tokens: 80, do_sample: true, temperature });
   return out[0].generated_text.at(-1).content;
 }
 

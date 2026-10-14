@@ -18,10 +18,24 @@ export function segments(text, spans) {
   return out;
 }
 
-// Sentences end at . ! ? (kept) or a newline; the last one may have no terminator.
+// Sentences end at . ! ? followed by a space or the end (kept), or at a newline,
+// so "2.5 kg" and "f*!%ing" stay whole. The last one may have no terminator.
+const SENTENCE = /(?:[^.!?\n]|[.!?]+(?![\s]|$))+(?:[.!?]+(?=\s|$)|\n|$)/g;
+
 export function flaggedSentences(text, findings) {
-  const sentences = [...text.matchAll(/[^.!?\n]+(?:[.!?]+|\n|$)/g)].map(m => ({ start: m.index, end: m.index + m[0].length, text: m[0] }));
-  return sentences
-    .map(s => ({ ...s, findings: findings.filter(f => f.start < s.end && f.end > s.start) }))
+  const sentences = [...text.matchAll(SENTENCE)].map(m => ({ start: m.index, end: m.index + m[0].length }));
+  // A finding that crosses a sentence break joins those sentences into one card.
+  const merged = [];
+  for (const s of sentences) {
+    const prev = merged.at(-1);
+    if (prev && findings.some(f => f.start < prev.end && f.end > s.start)) prev.end = s.end;
+    else merged.push({ ...s });
+  }
+  return merged
+    .map(s => {
+      const raw = text.slice(s.start, s.end);
+      const end = s.start + raw.replace(/\s+$/, '').length; // a trailing newline is not part of the card
+      return { start: s.start, end, text: text.slice(s.start, end), findings: findings.filter(f => f.start < s.end && f.end > s.start) };
+    })
     .filter(s => s.findings.length);
 }

@@ -37,6 +37,20 @@ test('flaggedSentences returns only sentences with findings, with offsets', () =
   assert.deepEqual(out[1].findings, [f2]);
 });
 
+test('punctuation inside a word or number does not end a sentence (review M1)', () => {
+  const t1 = 'Get the best f*!%ing tshirts here.';
+  assert.deepEqual(flaggedSentences(t1, [{ start: 13, end: 20 }]).map(s => s.text), [t1]);
+  const t2 = 'Lose 2.5 kg in 30 days. Shop now.';
+  assert.deepEqual(flaggedSentences(t2, [{ start: 12, end: 22 }]).map(s => s.text), ['Lose 2.5 kg in 30 days.']);
+});
+
+test('sentences that share one finding become one card (review M1)', () => {
+  const text = 'Are you\ndiabetic? Try our tea.';
+  const out = flaggedSentences(text, [{ start: 0, end: 16 }]);
+  assert.equal(out.length, 1);
+  assert.equal(out[0].text, 'Are you\ndiabetic?');
+});
+
 test('a sentence without a terminator at the end is still found', () => {
   const out = flaggedSentences('Fine line. Are you gay', [{ start: 11, end: 22 }]);
   assert.equal(out[0].text.trim(), 'Are you gay');

@@ -7,12 +7,15 @@ const categoryLabel = id => CATEGORIES.find(c => c.id === id)?.label ?? 'General
 function requestTurn({ sentence, findings, category }) {
   const problems = [...new Map(findings.map(f => [`${f.ruleId}|${f.text}`, f])).values()]
     .map(f => `- ${RULE_TITLES[f.ruleId]}: "${f.text}". ${f.why}`).join('\n');
+  // A 1B model copies phrases from the input; naming them stops that.
+  const banned = [...new Set(findings.map(f => f.text.trim()))].map(t => `"${t}"`).join(', ');
   return [
     `You rewrite one line of Meta (Facebook/Instagram) ad copy so it follows Meta's ad policies. Category: ${categoryLabel(category)}.`,
     `Line: "${sentence}"`,
     'Problems:',
     problems,
-    'Rules for the new line: one sentence; a statement, never a question; keep the product and its main benefit; never ask about or describe the reader\'s body, health, money, age or identity; no cures, guarantees, rankings or results within a set time; no pleasure or sexual wording; plain and friendly.',
+    `Leave out these words completely: ${banned}.`,
+    'Rules for the new line: one sentence; a statement, never a question; keep the product and its main benefit; never ask about or describe the reader\'s body, health, money, age or identity; no cures, guarantees or rankings; no number of minutes, hours, days, weeks or months; no pleasure or sexual wording; plain and friendly.',
     'Reply with the new line only.',
   ].join('\n');
 }
@@ -36,13 +39,31 @@ export function buildRewriteMessages({ sentence, findings, category }) {
   ];
 }
 
-const PREAMBLE = /^(?:sure|okay|ok|here(?:'s|’s| is)|certainly|of course)\b.*|.*:\s*$/i;
-const LABEL = /^(?:safer(?:\s+version)?|rewrite|new\s+line|line|answer)\s*:\s*/i;
+const FILLER = /^(?:sure|okay|ok|certainly|of course)\b/i;
+// "Safer version: ...", "Option 1: ...", "Here is the rewritten line: ..." -> what follows.
+const LABELLED = /^[^:"“]{1,60}:\s*(\S.*)$/;
+const LIST_MARKER = /^(?:[-*•]|\d+[.)])\s+/;
+// A refusal or a comment about the task is not a rewrite.
+const NOT_AD_COPY = /^(?:i\b|i'm|i’m|as an ai|sorry|unfortunately|this (?:line|version|rewrite|sentence|ad)\b|note\b)|\b(?:request|polic(?:y|ies)|rewrite|rewritten)\b/i;
 
+// Returns the first usable line of ad copy, or '' (a failed try).
 export function cleanRewrite(raw) {
-  const line = String(raw ?? '').split('\n').map(s => s.trim()).filter(Boolean).find(l => !PREAMBLE.test(l)) ?? '';
-  const out = line.replace(LABEL, '').replace(/\*\*/g, '').replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').trim();
-  return out.length >= 4 ? out : '';
+  for (const original of String(raw ?? '').split('\n')) {
+    let line = original.trim().replace(/\*\*/g, '').replace(LIST_MARKER, '').trim();
+    if (!line) continue;
+    const labelled = line.match(LABELLED);
+    if (labelled) line = labelled[1];
+    else if (/:\s*$/.test(line) || FILLER.test(line)) continue;
+    line = line.replace(/^["'“”‘’]+/, '');
+    // '"Gummies for busy afternoons." This version avoids...' -> the quoted part.
+    const quoted = line.match(/^(.*?[.!?])["'”’]/);
+    if (quoted) line = quoted[1];
+    line = line.replace(/["'“”‘’]+$/, '').trim();
+    if (NOT_AD_COPY.test(line)) return '';
+    if (!/[.!?]$/.test(line)) return ''; // cut off at the token limit
+    return line.length >= 4 ? line : '';
+  }
+  return '';
 }
 
 const squash = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '');
