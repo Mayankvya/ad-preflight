@@ -2,3 +2,5 @@ node_modules/
 .superpowers/
 eval/private/
 docs/post-draft.md
+vendor/transformers.min.js
+vendor/ort/

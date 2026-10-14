@@ -59,6 +59,7 @@ Measured in Chrome on an Intel Iris Xe laptop: the first rewrite downloads the m
 
 ```bash
 npm test
+npm run vendor   # fetch Transformers.js and onnxruntime-web from their npm releases
 npm run serve
 ```
 
@@ -73,7 +74,7 @@ Being run now with a D2C wellness brand's real past ads (rejected and approved).
 
 - Code: MIT, see [LICENSE](LICENSE).
 - Gemma 3: [Gemma Terms of Use](https://ai.google.dev/gemma/terms).
-- Transformers.js (Apache-2.0) and onnxruntime-web (MIT), vendored in `vendor/`.
+- Transformers.js (Apache-2.0) and onnxruntime-web (MIT). They are served from this site, not a CDN; `npm run vendor` (and the Pages build) fetches them from their official npm releases. See `vendor/VERSIONS.md`.
 
 Ad Preflight is a pre-check, not legal advice and not a guarantee: Meta's
 reviewers make the final call.
