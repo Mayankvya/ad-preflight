@@ -69,7 +69,8 @@ const CURE = [
 ];
 
 const TIMEFRAME = /\b(?:in|within|after)\s+(?:just\s+|only\s+)?(?:\d+|one|two|three|four|five|six|seven|ten|fourteen|thirty|a)\s+(?:minutes?|hours?|days?|weeks?|months?|nights?)\b|\bovernight\b/gi;
-const RESULT = /\b(?:results?|lose|lost|loss|burn\w*|gone|clear\w*|glow\w*|smooth\w*|younger|slimmer|thinner|stronger|harder|longer|bigger|firmer|kg|kgs|lbs|pounds|inches|sizes?|wrinkles?|acne|skin|weight|fat|energy|sleep|libido|stamina|performance|feel|notice|transform\w*)\b/i;
+// Words that turn "in 7 days" into a promise about the body or the outcome.
+const RESULT = /\b(?:results?|lose|lost|loss|burn\w*|gone|clear\w*|glow\w*|smooth\w*|younger|slimmer|thinner|stronger|harder|longer|bigger|firmer|kg|kgs|lbs|pounds|inches|sizes?|wrinkles?|acne|skin|weight|fat|energ\w*|sleep|libido|stamina|performance|feel\w*|see|notic\w*|experienc\w*|improv\w*|better|differen\w*|chang\w*|boost\w*|transform\w*)\b/i;
 const sentenceAround = (text, at) => {
   const start = Math.max(...['.', '!', '?', '\n'].map(c => text.lastIndexOf(c, at - 1))) + 1;
   const ends = ['.', '!', '?', '\n'].map(c => text.indexOf(c, at)).filter(i => i >= 0);

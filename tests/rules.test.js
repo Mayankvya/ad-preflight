@@ -19,6 +19,13 @@ test('timeframe promises in wellness categories, unless qualified', () => {
   assert.deepEqual(ids('See clearer skin in 7 days.', 'general'), []);
 });
 
+test('timeframe promises phrased as noticing or improving (real Gemma rewrite that slipped through)', () => {
+  assert.equal(sev('Our delicious gummies help boost your energy levels. Experience noticeable improvement in 7 days.', 'health', 'timeframe-promise'), 'risk');
+  assert.equal(sev('Feel the difference within two weeks.', 'health', 'timeframe-promise'), 'risk');
+  assert.equal(sev('You will see a change in 30 days.', 'beauty', 'timeframe-promise'), 'risk');
+  assert.deepEqual(ids('Free delivery in 2 days. Ships in 24 hours.', 'health'), []);
+});
+
 test('exaggerated claims', () => {
   assert.equal(sev('A miracle cream for tired skin.', 'beauty', 'extreme-claim'), 'risk');
   assert.equal(sev('Lose 10 kg without dieting.', 'weight', 'extreme-claim'), 'risk');
