@@ -30,11 +30,11 @@ it runs on the customer's device it costs nothing to run per check.
 | Results in a set time | "clear skin in 7 days" with no "results vary" | Risky | Health and Wellness |
 | Exaggerated claim | miracle, instant results, lose 10 kg | Risky | Health and Wellness |
 | Attacks appearance | "ugly skin", "gross belly fat" | Likely rejected | Health and Wellness |
-| Guarantee | guaranteed results or returns (money-back is fine) | Risky | [Prohibited Commercial Practices](https://transparency.meta.com/policies/ad-standards/deceptive-content/prohibited-commercial-practices/) |
+| Guarantee | guaranteed results or investment returns (money-back and product returns are fine) | Risky | [Prohibited Commercial Practices](https://transparency.meta.com/policies/ad-standards/deceptive-content/prohibited-commercial-practices/) |
 | Unverified endorsement | doctor-recommended, #1 rated, clinically proven | Risky | Prohibited Commercial Practices |
 | Profanity | including partly masked words like f\*!%ing | Likely rejected | [Profanity](https://transparency.meta.com/policies/ad-standards/objectionable-content/profanity/) |
 | Explicit sexual language | any category | Likely rejected | [Adult Sexual Solicitation and Sexually Explicit Language](https://transparency.meta.com/policies/ad-standards/objectionable-content/adult-sexual-solicitation-and-sexually-explicit-language/) |
-| Pleasure-focused | Sexual wellness category: pleasure, toys, "in the bedroom" instead of health | Likely rejected | Health and Wellness |
+| Pleasure or enhancement | Sexual wellness category: pleasure, toys, "last longer", "male enhancement" instead of health | Likely rejected | Health and Wellness |
 
 Meta's own allowed and not-allowed example phrases for personal attributes are
 part of the test suite.
@@ -46,7 +46,7 @@ Gemma only proposes a new line, and that line goes back through every rule
 before you see it. If two tries still break a rule, the page says so instead of
 showing an unsafe suggestion.
 
-MEASURED_TIMINGS
+Measured in Chrome on an Intel Iris Xe laptop: the first rewrite downloads the model once (about 9 minutes on a ~1.5 MB/s connection); after that the model loads from disk in under 5 seconds and each rewrite takes 2 to 7 seconds. Checking itself takes a few milliseconds.
 
 ## Privacy
 
@@ -67,7 +67,7 @@ past ads (see `eval/README.md`).
 
 ## First-user results
 
-EVAL_RESULTS
+Being run now with a D2C wellness brand's real past ads (rejected and approved). The counts will be added here.
 
 ## Credits and licences
 
