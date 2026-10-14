@@ -1,0 +1,29 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Ad Preflight smoke test</title>
+<pre id="log">starting...</pre>
+<script type="module">
+  import { createAiClient } from '../js/ai-client.js';
+  import { checkAd } from '../js/rules.js';
+  import { makeRewrite } from '../js/rewrite.js';
+  const log = s => { document.getElementById('log').textContent += '\n' + s; };
+  const ai = createAiClient(new Worker('../js/ai-worker.js', { type: 'module' }));
+  const t0 = performance.now();
+  const secs = () => ((performance.now() - t0) / 1000).toFixed(1) + 's';
+  try {
+    log('check: ' + JSON.stringify(await ai.check()));
+    let last = -10;
+    await ai.load((l, t) => { const p = Math.floor(100 * l / t); if (p >= last + 10) { last = p; log(`load ${p}%`); } });
+    log('loaded ' + secs());
+    for (const [sentence, category] of [
+      ['Struggling with low energy? Our gummies GUARANTEE results in 7 days!', 'health'],
+      ['Tired of your ugly skin? This miracle cream fixes it overnight.', 'beauty'],
+      ['Our new vibrator for mind-blowing pleasure.', 'sexual-wellness'],
+    ]) {
+      const findings = checkAd({ primary: sentence }, category).findings;
+      const r = await makeRewrite({ sentence, findings, category, generate: (m, o) => ai.generate(m, o), check: t => checkAd({ primary: t }, category).findings });
+      log(`\n${category}: ${sentence}\n  -> ${r.ok ? r.text : '(no safe version)'}  [tries ${r.tries}, ${secs()}]`);
+    }
+    log('SMOKE OK');
+  } catch (e) { log('SMOKE FAIL: ' + e.message); }
+</script>
