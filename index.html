@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Check Meta ad copy against Meta's ad policies before you publish. Runs on your device.">
+  <title>Ad Preflight</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Ad Preflight</h1>
+      <p class="lede">Check Meta ad copy against Meta's own ad policies before you publish. Every warning links to the rule it comes from. Nothing you paste leaves this device.</p>
+    </header>
+
+    <form id="ad-form" novalidate>
+      <label class="field">Category
+        <select id="category"></select>
+      </label>
+      <label class="field">Primary text
+        <textarea id="primary" rows="5" placeholder="The main text above the image or video"></textarea>
+      </label>
+      <label class="field">Headline
+        <input id="headline" placeholder="Bold line under the creative">
+      </label>
+      <label class="field">Description
+        <input id="description" placeholder="Smaller line under the headline">
+      </label>
+      <p class="error" id="form-error" hidden>Paste at least one field.</p>
+      <div class="row">
+        <button class="primary" type="submit">Check ad</button>
+        <button class="ghost" type="button" id="example">Try an example</button>
+      </div>
+    </form>
+
+    <section id="result" hidden aria-live="polite">
+      <div id="verdict" class="verdict"><strong id="verdict-label"></strong><span id="verdict-sub"></span></div>
+      <div id="preview"></div>
+      <div id="cards"></div>
+    </section>
+
+    <footer>
+      <p>A pre-check, not a guarantee: Meta's reviewers make the final call. Rules are based on Meta's Advertising Standards as published on 14 Oct 2026. Safer versions are written by Gemma 3 1B running in your browser and re-checked against every rule before you see them.</p>
+    </footer>
+  </main>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
