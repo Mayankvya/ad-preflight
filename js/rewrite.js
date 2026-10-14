@@ -12,7 +12,7 @@ function requestTurn({ sentence, findings, category }) {
     `Line: "${sentence}"`,
     'Problems:',
     problems,
-    'Rules for the new line: keep the product and its main benefit; never ask about or describe the reader\'s body, health, money, age or identity; no cures, guarantees, rankings or results within a set time; no pleasure or sexual wording; plain and friendly.',
+    'Rules for the new line: one sentence; a statement, never a question; keep the product and its main benefit; never ask about or describe the reader\'s body, health, money, age or identity; no cures, guarantees, rankings or results within a set time; no pleasure or sexual wording; plain and friendly.',
     'Reply with the new line only.',
   ].join('\n');
 }

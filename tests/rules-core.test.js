@@ -65,6 +65,20 @@ test('implied condition question is a risk, not a reject', () => {
   assert.equal(checkAd({ primary: 'Struggling with low energy? Try our gummies.' }, 'health').verdict, 'risky');
 });
 
+test('"Feeling X?" and "Do you feel X?" questions imply a condition too (real Gemma rewrite that slipped through)', () => {
+  for (const text of [
+    'Feeling fatigued? Explore our supplement to support healthy blood sugar levels.',
+    'Do you often feel tired after lunch?',
+    'Always feeling bloated? Try our tea.',
+  ]) {
+    const f = pa(text, 'health');
+    assert.equal(f.length, 1, text);
+    assert.equal(f[0].severity, 'risk', text);
+  }
+  assert.deepEqual(pa('Feeling good starts with breakfast.', 'health'), []);
+  assert.deepEqual(pa('Can\'t decide? Try our sampler pack.', 'health'), []);
+});
+
 test('a risk inside a reject of the same rule is dropped', () => {
   const f = pa('Struggling with diabetes? We can help.');
   assert.equal(f.length, 1);

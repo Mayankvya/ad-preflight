@@ -55,7 +55,7 @@ const PERSONAL = [
   finder(/\bwhat(?:'s|\s+is)\s+your\s+(?:driver'?s\s+licen[cs]e|social\s+security|ssn|passport|aadhaar|pan\s+card|bank\s+account|credit\s+card|password)/gi, 'reject'),
   // A question that assumes the reader has a problem: Meta treats implying a
   // condition like asserting it, but without a listed attribute it's a risk.
-  finder(/(?<=^|[.!?]\s+)(?:struggling with|suffering from|dealing with|tired of|sick of|battling|fed up with)\b[^.!?\n]*\?/gim, 'risk'),
+  finder(/(?<=^|[.!?]\s+)(?:struggling with|suffering from|dealing with|tired of|sick of|battling|fed up with|(?:always\s+|constantly\s+|still\s+)?feeling|do\s+you\s+(?:often\s+|ever\s+|always\s+|still\s+)?(?:feel|get|struggle|suffer|have\s+trouble))\b[^.!?\n]*\?/gim, 'risk'),
 ];
 
 // ---- health claims -----------------------------------------------------
