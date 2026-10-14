@@ -10,7 +10,7 @@ Everything runs in your browser. The rules are plain JavaScript, and the
 rewrites come from Gemma 3 1B running on your own device through WebGPU.
 Nothing you paste is sent anywhere.
 
-**Try it:** DEMO_URL
+**Try it:** https://mayankvya.github.io/ad-preflight/
 
 Built for the [DEV Hacktoberfest Open-Source AI Challenge, Week 2: Side Hustle](https://dev.to/challenges/hacktoberfest-week2-2026-10-12).
 
