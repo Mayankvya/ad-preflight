@@ -1,0 +1,4 @@
+[
+  { "id": "ex1", "category": "health", "primary": "Struggling with low energy? Our gummies work in 7 days.", "headline": "", "description": "", "outcome": "rejected", "reason": "Personal attributes" },
+  { "id": "ex2", "category": "health", "primary": "Gummies for busy afternoons. Results vary.", "headline": "Meet your new desk drawer staple", "description": "", "outcome": "approved" }
+]
